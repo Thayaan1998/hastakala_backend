@@ -69,7 +69,9 @@ def getItemByVendor():
     try:
         vendorId = request.json.get('vendorId', None)
 
-        sql = "SELECT item.itemId,item.itemName,item.price,item.quantity,item.description,itemimage.itemImageId,itemimage.imageUrl FROM item JOIN itemimage on itemimage.itemId=item.itemId WHERE itemimage.id=1 and item.userId="+vendorId+" ORDER by item.itemId desc"
+        sql = "SELECT item.itemId,item.itemName,item.price,item.quantity,item.description,itemimage.itemImageId," \
+              "itemimage.imageUrl FROM item JOIN itemimage on itemimage.itemId=item.itemId " \
+              "WHERE itemimage.id=1 and item.userId="+vendorId+" ORDER by item.itemId desc"
 
         mycursor.execute(sql)
 
@@ -107,6 +109,47 @@ def getItemByType2():
         return jsonify(myresult);
     except:
         return "unsuccess"
+
+def getItemByType3():
+    try:
+        itemType = request.json.get('itemType', None)
+        itemName = request.json.get('itemName', None)
+
+
+        sql = "SELECT item.itemId,item.itemName,item.price,item.quantity,item.description," \
+              "itemimage.itemImageId,itemimage.imageUrl FROM item JOIN itemimage on itemimage.itemId=item.itemId " \
+              "WHERE itemimage.id=1 and item.itemType='"+itemType+"' and item.itemName like  '%"+itemName+"%' ORDER by item.itemId desc "
+
+        mycursor.execute(sql)
+
+        myresult = mycursor.fetchall()
+
+        return jsonify(myresult);
+    except:
+        return "unsuccess"
+
+def getItemByType4():
+    try:
+        itemType = request.json.get('itemType', None)
+        type = request.json.get('type', None)
+
+
+        sql = "SELECT item.itemId,item.itemName,item.price,item.quantity,item.description," \
+              " itemimage.itemImageId,itemimage.imageUrl FROM item " \
+              " JOIN itemimage on itemimage.itemId=item.itemId " \
+              " JOIN machinelearningimages on machinelearningimages.itemId=item.itemId " \
+              " WHERE itemimage.id=1 and item.itemType='"+itemType+"' " \
+              " and machinelearningimages.type='" + type + "' " \
+              " ORDER by item.itemId desc "
+
+        mycursor.execute(sql)
+
+        myresult = mycursor.fetchall()
+
+        return jsonify(myresult);
+    except:
+        return "unsuccess"
+
 
 
 def makeFavourite(userId,itemId):
@@ -198,6 +241,22 @@ def getItems():
         myresult = mycursor.fetchall()
 
         return jsonify(myresult);
+    except:
+        return "unsuccess"
+
+
+def machinelearningimages():
+    itemId = request.json.get('itemId', None)
+    type = request.json.get('type', None)
+
+    try:
+        sql = "INSERT INTO machinelearningimages(itemId,type) VALUES (%s,%s)"
+        val = (itemId ,type)
+        mycursor.execute(sql, val)
+        mydb.commit()
+        last=mycursor.lastrowid
+
+        return jsonify(last);
     except:
         return "unsuccess"
 

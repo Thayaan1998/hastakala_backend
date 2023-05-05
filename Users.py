@@ -97,6 +97,31 @@ def getShops():
     except:
         return "unsuccess"
 
+def getShops2():
+    try:
+        sql = "SELECT users.userId,users.name,users.address,userImage.imageUrl FROM users INNER JOIN userImage on userImage.userId=users.userId where users.type='vendor' Limit 3 "
+        mycursor.execute(sql)
+
+        myresult = mycursor.fetchall()
+
+        return jsonify(myresult);
+    except:
+        return "unsuccess"
+
+def getShopsByName():
+    try:
+        name = request.json.get('name', None)
+
+        sql = "SELECT users.userId,users.name,users.address,userImage.imageUrl FROM users" \
+              " INNER JOIN userImage on userImage.userId=users.userId where users.type='vendor' and users.name like '%"+name+"%' "
+        mycursor.execute(sql)
+
+        myresult = mycursor.fetchall()
+
+        return jsonify(myresult);
+    except:
+        return "unsuccess"
+
 def getDrivers():
     try:
         sql = "SELECT users.userId,users.name,users.address,users.phoneNumber,userImage.imageUrl FROM users INNER JOIN userImage on userImage.userId=users.userId where users.type='driver' "

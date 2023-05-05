@@ -3,6 +3,12 @@ from flask import Flask, request, jsonify, send_file, send_from_directory, url_f
 from flask_cors import CORS
 from flask import send_from_directory, current_app as app
 
+import np as np
+from PIL import Image
+from keras.models import load_model
+import numpy as np
+import tensorflow
+
 
 import PerticularItem
 
@@ -28,6 +34,10 @@ def getItems():
 def addItem():
     return Items.addItem();
 
+@app.route('/addMachineLearingImages', methods=['GET', 'POST'])
+def machinelearningimages():
+    return Items.machinelearningimages();
+
 @app.route('/addItemImage', methods=['GET', 'POST'])
 def addItemImage():
     return Items.addItemImage();
@@ -43,6 +53,14 @@ def getItemType():
 @app.route('/getItemType2', methods=['GET', 'POST'])
 def getItemType2():
     return Items.getItemByType2();
+
+@app.route('/getItemType3', methods=['GET', 'POST'])
+def getItemType3():
+    return Items.getItemByType3();
+
+@app.route('/getItemType4', methods=['GET', 'POST'])
+def getItemType4():
+    return Items.getItemByType4();
 
 @app.route('/getItemByItemId', methods=['GET', 'POST'])
 def getItemByItemId():
@@ -102,6 +120,15 @@ def getUserDetailsByUserId():
 @app.route('/getShops', methods=['GET', 'POST'])
 def getShops():
     return Users.getShops()
+
+@app.route('/getShops2', methods=['GET', 'POST'])
+def getShops2():
+    return Users.getShops2()
+
+
+@app.route('/getShopsByName', methods=['GET', 'POST'])
+def getShopsByName():
+    return Users.getShopsByName()
 
 @app.route('/getDrivers', methods=['GET', 'POST'])
 def getDrivers():
@@ -339,11 +366,32 @@ def getAppliedPeople():
 def updateVacancies():
     return jobvancies.updateVacancies()
 
+@app.route('/predict', methods=['POST'])
+def predict():
+    file = request.files['photo']
+    model_01 = load_model('model.h5')
+    img = Image.open(file).convert('L').resize((150, 150), Image.ANTIALIAS)
+    img = np.array(img)
+
+    array = model_01.predict(img[None, :, :])
+
+    largest_number = 0
+    i = 0
+    for number in array[0]:
+        if number > largest_number:
+            largest_number = i
+        i = i + 1
+
+    print(largest_number)
+
+    return str(largest_number)
+
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     app.secret_key = os.urandom(24)
-    app.run(debug=True, host="192.168.1.185", use_reloader=True)
+    app.run(debug=True, host="192.168.8.101", use_reloader=True)
+
 
 
