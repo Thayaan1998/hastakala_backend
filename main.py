@@ -386,6 +386,16 @@ def predict():
 
     return str(largest_number)
 
+# Row Material
+
+@app.route('/getRowMaterials', methods=['POST'])
+def getRowMaterials():
+    return jobvancies.getRowMaterials()
+
+@app.route('/getFilterRowMaterials', methods=['POST'])
+def getFilterRowMaterials():
+    return jobvancies.getFilterRowMaterials()
+
 
 
 # Press the green button in the gutter to run the script.

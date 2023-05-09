@@ -138,6 +138,33 @@ def updateVacancies():
     except:
       return "unsuccess"
 
+def getRowMaterials():
+  try:
+    sql = "SELECT rowmaterialId,name,address,phonenumber,description FROM `rowMaterial` "
+
+    mycursor.execute(sql)
+
+    myresult = mycursor.fetchall()
+
+    return jsonify(myresult);
+  except:
+    return "unsuccess"
+
+
+def getFilterRowMaterials():
+    try:
+        address  = request.json.get('address', None)
+
+        sql = "SELECT rowmaterialId,name,address,phonenumber,description FROM `rowMaterial` where address  like '%"+address +"%' "
+
+        mycursor.execute(sql)
+
+        myresult = mycursor.fetchall()
+
+        return jsonify(myresult);
+    except:
+        return "unsuccess"
+
 
 def fileUpload():
     file = request.files['photo']
